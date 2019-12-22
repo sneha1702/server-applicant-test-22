@@ -11,5 +11,5 @@ public interface CarSelectionService
     void selectCar(Long driverId, Specification<CarDO> carDO)
         throws DriverOfflineException, CarNotFoundException, DriverNotFoundException;
 
-    void deselectCar(long driverId);
+    void deselectCar(long driverId) throws DriverNotFoundException;
 }

@@ -108,9 +108,8 @@ public class CarSelectionServiceTest
 
     @Test
     public void testCarIsAvailableForSelectionWhenItsDeselected()
-        throws CarNotFoundException, DriverOfflineException
+        throws CarNotFoundException, DriverOfflineException, DriverNotFoundException
     {
-        // arrange
 
         when(driverRepo.findById(1L))
             .thenReturn(
@@ -124,8 +123,13 @@ public class CarSelectionServiceTest
             .thenReturn(
                 Collections.singletonList(
                     CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build()));
-        // act
         carSelectionService.deselectCar(1L);
+
+        when(carRepo.findAll(any()))
+            .thenReturn(
+                Collections.singletonList(
+                    CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build()));
+        carSelectionService.selectCar(2L, Specification.where(withLicensePlate("ABC123")));
 
         // assert
         CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();

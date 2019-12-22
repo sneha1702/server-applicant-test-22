@@ -8,13 +8,10 @@ import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.exception.CarNotFoundException;
 import com.freenow.exception.DriverNotFoundException;
 import com.freenow.exception.DriverOfflineException;
-import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import static com.freenow.dataaccessobject.CarCriteriaSpecs.withSelected;
 
 @Service
 @AllArgsConstructor
@@ -50,24 +47,42 @@ public class DefaultCarSelectionService implements CarSelectionService
 
 
     @Override
-    public void deselectCar(long driverId)
+    public synchronized void deselectCar(long driverId) throws DriverNotFoundException
     {
+        Optional<DriverDO> optionalDriverDO = driverRepository.findById(driverId);
+        if (optionalDriverDO.isPresent())
+        {
+            DriverDO selDriver = optionalDriverDO.get();
+            CarDO selCar = selDriver.getCar();
+
+            selCar.setSelected(false);
+            selDriver.setCar(selCar);
+            driverRepository.save(selDriver);
+
+        }
+        else
+        {
+            throw new DriverNotFoundException("Driver with Id " + driverId + " not found!");
+        }
     }
 
 
     private synchronized void driverGetToSelectACar(DriverDO driverDO, Specification<CarDO> carDO)
         throws CarNotFoundException
     {
-        List<CarDO> all = carRepository.findAll(carDO.and(withSelected(Boolean.FALSE)));
-        if (all.size() == 0)
+        Optional<CarDO> anyCar = carRepository.findAll(carDO).stream().filter(e -> e.getSelected() == null || e.getSelected().equals(false)).findAny();
+        if (anyCar.isPresent())
+        {
+            CarDO firstCar = anyCar.get();
+            driverDO.setCar(firstCar);
+            firstCar.setSelected(true);
+
+            driverRepository.save(driverDO);
+            //        carRepository.save(firstCar);
+        }
+        else
         {
             throw new CarNotFoundException();
         }
-        CarDO firstCar = all.get(0);
-        driverDO.setCar(firstCar);
-        firstCar.setSelected(true);
-
-        driverRepository.save(driverDO);
-        carRepository.save(firstCar);
     }
 }
