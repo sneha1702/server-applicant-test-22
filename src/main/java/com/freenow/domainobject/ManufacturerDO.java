@@ -22,10 +22,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class ManufacturerDO {
-  @Id @GeneratedValue private Long id;
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "manufacture_type", nullable = false)
-  ManufactureType manufactureType;
+public class ManufacturerDO
+{
+    @Enumerated(EnumType.STRING)
+    @Column(name = "manufacture_type", nullable = false)
+    ManufactureType manufactureType;
+    @Id
+    @GeneratedValue
+    private Long id;
 }

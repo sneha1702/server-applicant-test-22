@@ -65,6 +65,7 @@ public class DriverDTO
         return coordinate;
     }
 
+
     public static class DriverDTOBuilder
     {
         private Long id;

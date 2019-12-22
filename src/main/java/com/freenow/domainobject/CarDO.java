@@ -24,37 +24,40 @@ import lombok.NoArgsConstructor;
 @Table(
     name = "car",
     uniqueConstraints =
-        @UniqueConstraint(
-            name = "uc_license_plate",
-            columnNames = {"license_plate"}))
+    @UniqueConstraint(
+        name = "uc_license_plate",
+        columnNames = {"license_plate"}))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class CarDO {
+public class CarDO
+{
 
-  @Id @GeneratedValue private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-  @Column(name = "license_plate", nullable = false)
-  @NotNull(message = "License plate can not be null!")
-  private String licensePlate;
+    @Column(name = "license_plate", nullable = false)
+    @NotNull(message = "License plate can not be null!")
+    private String licensePlate;
 
-  @Column(nullable = false)
-  private Boolean convertible;
+    @Column(nullable = false)
+    private Boolean convertible;
 
-  private Integer rating;
+    private Integer rating;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "engine_type", nullable = false)
-  private EngineType engineType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "engine_type", nullable = false)
+    private EngineType engineType;
 
-  @OneToOne(mappedBy = "car", fetch = FetchType.EAGER)
-  private DriverDO driver;
+    @OneToOne(mappedBy = "car", fetch = FetchType.EAGER)
+    private DriverDO driver;
 
-  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  @JoinColumn(name = "manufacturer_id", nullable = false)
-  private ManufacturerDO manufacturer;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "manufacturer_id", nullable = false)
+    private ManufacturerDO manufacturer;
 
-  @Column(nullable = false)
-  private Boolean selected;
+    @Column(nullable = false)
+    private Boolean selected;
 }

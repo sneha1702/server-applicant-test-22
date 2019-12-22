@@ -6,9 +6,10 @@ import com.freenow.exception.DriverNotFoundException;
 import com.freenow.exception.DriverOfflineException;
 import org.springframework.data.jpa.domain.Specification;
 
-public interface CarSelectionService {
-  void selectCar(Long driverId, Specification<CarDO> carDO)
-      throws DriverOfflineException, CarNotFoundException, DriverNotFoundException;
+public interface CarSelectionService
+{
+    void selectCar(Long driverId, Specification<CarDO> carDO)
+        throws DriverOfflineException, CarNotFoundException, DriverNotFoundException;
 
-  void deselectCar(long driverId);
+    void deselectCar(long driverId);
 }

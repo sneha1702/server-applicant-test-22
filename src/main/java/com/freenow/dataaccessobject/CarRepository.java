@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CarRepository
-    extends CrudRepository<CarDO, Long>, JpaSpecificationExecutor<CarDO> {}
+    extends CrudRepository<CarDO, Long>, JpaSpecificationExecutor<CarDO>
+{
+}

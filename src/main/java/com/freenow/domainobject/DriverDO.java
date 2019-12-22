@@ -27,47 +27,50 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(
     name = "driver",
     uniqueConstraints =
-        @UniqueConstraint(
-            name = "uc_username",
-            columnNames = {"username"}))
+    @UniqueConstraint(
+        name = "uc_username",
+        columnNames = {"username"}))
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DriverDO {
+public class DriverDO
+{
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false)
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private ZonedDateTime dateCreated = ZonedDateTime.now();
+    @Column(nullable = false)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime dateCreated = ZonedDateTime.now();
 
-  @Column(nullable = false)
-  @NotNull(message = "Username can not be null!")
-  private String username;
+    @Column(nullable = false)
+    @NotNull(message = "Username can not be null!")
+    private String username;
 
-  @Column(nullable = false)
-  @NotNull(message = "Password can not be null!")
-  private String password;
+    @Column(nullable = false)
+    @NotNull(message = "Password can not be null!")
+    private String password;
 
-  @Column(nullable = false)
-  private Boolean deleted = false;
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
-  @Embedded private GeoCoordinate coordinate;
+    @Embedded
+    private GeoCoordinate coordinate;
 
-  @Column
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private ZonedDateTime dateCoordinateUpdated = ZonedDateTime.now();
+    @Column
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime dateCoordinateUpdated = ZonedDateTime.now();
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private OnlineStatus onlineStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OnlineStatus onlineStatus;
 
-  @OneToOne(fetch = FetchType.EAGER, optional = true)
-  @JoinColumn(name = "CAR_ID", nullable = true)
-  private CarDO car;
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "CAR_ID", nullable = true)
+    private CarDO car;
 
-  @Column private Long car_id;
+    @Column
+    private Long car_id;
 }

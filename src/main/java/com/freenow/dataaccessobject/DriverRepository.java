@@ -12,7 +12,8 @@ import org.springframework.data.repository.CrudRepository;
  * <p>
  */
 public interface DriverRepository
-    extends CrudRepository<DriverDO, Long>, JpaSpecificationExecutor<DriverDO> {
+    extends CrudRepository<DriverDO, Long>, JpaSpecificationExecutor<DriverDO>
+{
 
-  List<DriverDO> findByOnlineStatus(OnlineStatus onlineStatus);
+    List<DriverDO> findByOnlineStatus(OnlineStatus onlineStatus);
 }

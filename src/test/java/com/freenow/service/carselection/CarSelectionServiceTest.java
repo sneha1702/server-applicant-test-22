@@ -26,107 +26,122 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CarSelectionServiceTest {
+public class CarSelectionServiceTest
+{
 
-  private CarSelectionService carSelectionService;
-  @Mock private DriverRepository driverRepo;
-  @Mock private CarRepository carRepo;
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+    private CarSelectionService carSelectionService;
+    @Mock
+    private DriverRepository driverRepo;
+    @Mock
+    private CarRepository carRepo;
 
-  @Rule public ExpectedException expectedException = ExpectedException.none();
 
-  @Before
-  public void setup() {
-    carSelectionService = new DefaultCarSelectionService(driverRepo, carRepo);
-  }
+    @Before
+    public void setup()
+    {
+        carSelectionService = new DefaultCarSelectionService(driverRepo, carRepo);
+    }
 
-  @Test
-  public void testWhenAnOffineDriverSelectsACar()
-      throws DriverOfflineException, CarNotFoundException, DriverNotFoundException {
-    // arrange
 
-    when(driverRepo.findById(1L))
-        .thenReturn(
-            Optional.of(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.OFFLINE).build()));
+    @Test
+    public void testWhenAnOffineDriverSelectsACar()
+        throws DriverOfflineException, CarNotFoundException, DriverNotFoundException
+    {
+        // arrange
 
-    expectedException.expect(DriverOfflineException.class);
-    carSelectionService.selectCar(1L, Specification.where(withLicensePlate("AB123")));
-  }
+        when(driverRepo.findById(1L))
+            .thenReturn(
+                Optional.of(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.OFFLINE).build()));
 
-  @Test
-  public void testWhenAnOnlineDriverSelectsAValidCar()
-      throws CarNotFoundException, DriverOfflineException, DriverNotFoundException {
-    // arrange
+        expectedException.expect(DriverOfflineException.class);
+        carSelectionService.selectCar(1L, Specification.where(withLicensePlate("AB123")));
+    }
 
-    when(driverRepo.findById(1L))
-        .thenReturn(
-            Optional.of(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).build()));
-    when(carRepo.findAll(any()))
-        .thenReturn(
-            Collections.singletonList(
-                CarDO.builder().id(1L).licensePlate("ABC123").selected(false).build()));
-    // act
-    carSelectionService.selectCar(1L, Specification.where(withLicensePlate("AB123")));
 
-    // assert
-    CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
-    verify(carRepo).save(selCar);
-    verify(driverRepo)
-        .save(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).car(selCar).build());
-  }
+    @Test
+    public void testWhenAnOnlineDriverSelectsAValidCar()
+        throws CarNotFoundException, DriverOfflineException, DriverNotFoundException
+    {
+        // arrange
 
-  @Test
-  public void testWhenAnOnlineDriverSearchesForUnavailableCar()
-      throws CarNotFoundException, DriverOfflineException, DriverNotFoundException {
-    // arrange
+        when(driverRepo.findById(1L))
+            .thenReturn(
+                Optional.of(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).build()));
+        when(carRepo.findAll(any()))
+            .thenReturn(
+                Collections.singletonList(
+                    CarDO.builder().id(1L).licensePlate("ABC123").selected(false).build()));
+        // act
+        carSelectionService.selectCar(1L, Specification.where(withLicensePlate("AB123")));
 
-    when(driverRepo.findById(1L))
-        .thenReturn(
-            Optional.of(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).build()));
-    when(carRepo.findAll(any())).thenReturn(Collections.emptyList());
-    // act
-    expectedException.expect(CarNotFoundException.class);
-    carSelectionService.selectCar(1L, Specification.where(withLicensePlate("AB123")));
+        // assert
+        CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
+        verify(carRepo).save(selCar);
+        verify(driverRepo)
+            .save(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).car(selCar).build());
+    }
 
-    // assert
-    CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
-    verify(carRepo, never()).save(selCar);
-    verify(driverRepo, never())
-        .save(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).car(selCar).build());
-  }
 
-  @Test
-  public void testCarIsAvailableForSelectionWhenItsDeselected()
-      throws CarNotFoundException, DriverOfflineException {
-    // arrange
+    @Test
+    public void testWhenAnOnlineDriverSearchesForUnavailableCar()
+        throws CarNotFoundException, DriverOfflineException, DriverNotFoundException
+    {
+        // arrange
 
-    when(driverRepo.findById(1L))
-        .thenReturn(
-            Optional.of(
-                DriverDO.builder()
-                    .id(1L)
-                    .onlineStatus(OnlineStatus.ONLINE)
-                    .car(CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build())
-                    .build()));
-    when(carRepo.findAll(any()))
-        .thenReturn(
-            Collections.singletonList(
-                CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build()));
-    // act
-    carSelectionService.deselectCar(1L);
+        when(driverRepo.findById(1L))
+            .thenReturn(
+                Optional.of(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).build()));
+        when(carRepo.findAll(any())).thenReturn(Collections.emptyList());
+        // act
+        expectedException.expect(CarNotFoundException.class);
+        carSelectionService.selectCar(1L, Specification.where(withLicensePlate("AB123")));
 
-    // assert
-    CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
-    verify(carRepo, never()).save(selCar);
-    verify(driverRepo, never())
-        .save(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).car(selCar).build());
-  }
+        // assert
+        CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
+        verify(carRepo, never()).save(selCar);
+        verify(driverRepo, never())
+            .save(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).car(selCar).build());
+    }
 
-  @Test
-  public void testCarIsUnavailableForSelectionWhenItsSelected() {
-    // arrange
 
-    // act
+    @Test
+    public void testCarIsAvailableForSelectionWhenItsDeselected()
+        throws CarNotFoundException, DriverOfflineException
+    {
+        // arrange
 
-    // assert
-  }
+        when(driverRepo.findById(1L))
+            .thenReturn(
+                Optional.of(
+                    DriverDO.builder()
+                        .id(1L)
+                        .onlineStatus(OnlineStatus.ONLINE)
+                        .car(CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build())
+                        .build()));
+        when(carRepo.findAll(any()))
+            .thenReturn(
+                Collections.singletonList(
+                    CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build()));
+        // act
+        carSelectionService.deselectCar(1L);
+
+        // assert
+        CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
+        verify(carRepo, never()).save(selCar);
+        verify(driverRepo, never())
+            .save(DriverDO.builder().id(1L).onlineStatus(OnlineStatus.ONLINE).car(selCar).build());
+    }
+
+
+    @Test
+    public void testCarIsUnavailableForSelectionWhenItsSelected()
+    {
+        // arrange
+
+        // act
+
+        // assert
+    }
 }
