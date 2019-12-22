@@ -5,6 +5,7 @@ import com.freenow.domainvalue.OnlineStatus;
 import com.freenow.exception.ConstraintsViolationException;
 import com.freenow.exception.EntityNotFoundException;
 import java.util.List;
+import org.springframework.data.jpa.domain.Specification;
 
 public interface DriverService
 {
@@ -19,4 +20,6 @@ public interface DriverService
         throws EntityNotFoundException;
 
     List<DriverDO> find(OnlineStatus onlineStatus);
+
+    List<DriverDO> find(Specification<DriverDO> driverSpec);
 }

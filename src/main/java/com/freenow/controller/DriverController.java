@@ -1,15 +1,23 @@
 package com.freenow.controller;
 
 import com.freenow.controller.mapper.DriverMapper;
+import com.freenow.dataaccessobject.CarCriteriaSpecs;
+import com.freenow.dataaccessobject.DriverCriteriaSpecs;
 import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.DriverDO;
+import com.freenow.domainvalue.EngineType;
 import com.freenow.domainvalue.OnlineStatus;
+import com.freenow.exception.CarNotFoundException;
 import com.freenow.exception.ConstraintsViolationException;
+import com.freenow.exception.DriverNotFoundException;
+import com.freenow.exception.DriverOfflineException;
 import com.freenow.exception.EntityNotFoundException;
+import com.freenow.service.carselection.CarSelectionService;
 import com.freenow.service.driver.DriverService;
 import java.util.List;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,17 +36,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("v1/drivers")
+@AllArgsConstructor
 public class DriverController
 {
 
     private final DriverService driverService;
-
-
-    @Autowired
-    public DriverController(final DriverService driverService)
-    {
-        this.driverService = driverService;
-    }
+    private final CarSelectionService carSelectionService;
 
 
     @GetMapping("/{driverId}")
@@ -73,9 +76,48 @@ public class DriverController
     }
 
 
+    @PutMapping("/selectCar/{driverId}")
+    public void selectCar(
+        @PathVariable long driverId, @RequestParam(required = false) String licensePlate)
+        throws CarNotFoundException, DriverOfflineException, DriverNotFoundException
+
+    {
+        carSelectionService.selectCar(driverId, CarCriteriaSpecs.withLicensePlate(licensePlate));
+    }
+
+
+    @PutMapping("/deselectCar/{driverId}")
+    public void deselectCar(
+        @PathVariable long driverId)
+        throws DriverNotFoundException
+
+    {
+        carSelectionService.deselectCar(driverId);
+    }
+
+
     @GetMapping
     public List<DriverDTO> findDrivers(@RequestParam OnlineStatus onlineStatus)
     {
         return DriverMapper.makeDriverDTOList(driverService.find(onlineStatus));
     }
+
+
+    @GetMapping("/filter")
+    public List<DriverDTO> findDrivers(
+        @RequestParam(required = false) OnlineStatus onlineStatus,
+        @RequestParam(required = false
+        ) String username,
+        @RequestParam(required = false) String licensePlate,
+        @RequestParam(required = false) String rating,
+        @RequestParam(required = false) EngineType engineType,
+        @RequestParam(required = false) Boolean convertible,
+        @RequestParam(required = false) Boolean selected)
+    {
+        Specification<DriverDO> and = DriverCriteriaSpecs.withUsername(username).
+            and(DriverCriteriaSpecs.withLicensePlate(licensePlate));
+        return DriverMapper.makeDriverDTOList(driverService.find(and));
+    }
+
+
 }

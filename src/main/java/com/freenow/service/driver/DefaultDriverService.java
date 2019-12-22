@@ -10,6 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,6 +112,13 @@ public class DefaultDriverService implements DriverService
     public List<DriverDO> find(OnlineStatus onlineStatus)
     {
         return driverRepository.findByOnlineStatus(onlineStatus);
+    }
+
+
+    @Override
+    public List<DriverDO> find(Specification<DriverDO> driverSpec)
+    {
+        return driverRepository.findAll(driverSpec);
     }
 
 
