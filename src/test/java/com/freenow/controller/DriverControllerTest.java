@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -50,41 +51,62 @@ public class DriverControllerTest
 
 
     @Test
-    public void filterDriversTest() throws Exception
+    public void filterDriversByDriverAttributesTest() throws Exception
     {
-        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
-        ResultActions resultActions = this.mockMvc.perform(get("/v1/drivers/filter?onlineStatus=ONLINE&licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
+        ResultActions resultActions = this.mockMvc.perform(get("/v1/drivers/filter?onlineStatus=ONLINE&username=driver05")).andDo(print()).andExpect(status().isOk());
 
         MvcResult mvcResult = resultActions.andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
         List<DriverDO> driverDOS = Arrays.asList(objectMapper.readValue(contentAsString, DriverDO[].class));
         assertThat(driverDOS.size()).isEqualTo(1);
+        assertThat(driverDOS.get(0).getUsername()).contains("driver05");
+    }
 
+
+    @Test
+    public void filterDriversByCarAttributesTest() throws Exception
+    {
+        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
+        ResultActions resultActions =
+            this.mockMvc.perform(get("/v1/drivers/filter?onlineStatus=ONLINE&licensePlate=ABC123&engineType=GAS&convertible=true&rating=10"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        List<DriverDO> driverDOS = Arrays.asList(objectMapper.readValue(contentAsString, DriverDO[].class));
+        assertThat(driverDOS.size()).isEqualTo(1);
     }
 
 
     @Test
     public void selectCar_DriverNotFound() throws Exception
     {
-        ResultActions resultActions = this.mockMvc.perform(get("/v1/drivers?onlineStatus=ONLINE"))
+        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/10?licensePlate=ABC123"))
             .andDo(print())
-            .andExpect(status().isOk());
-        MvcResult mvcResult = resultActions.andReturn();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        List<DriverDO> driverDOS = Arrays.asList(objectMapper.readValue(contentAsString, DriverDO[].class));
-        assertThat(driverDOS.size()).isEqualTo(4);
+            .andExpect(status().isNotFound())
+            .andExpect(status().reason(containsString("Driver not found!")));
     }
 
 
     @Test
-    public void selectCar_CarNotFound()
+    public void selectCar_CarNotFound() throws Exception
     {
+        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=INVALID123"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(status().reason(containsString("Car not found!")));
     }
 
 
     @Test
-    public void deselectCar()
+    public void deselectCar() throws Exception
     {
+        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
+
+        ResultActions resultActions = this.mockMvc.perform(put("/v1/drivers/deselectCar/8")).andDo(print()).andExpect(status().isOk());
+        
+
     }
 
 

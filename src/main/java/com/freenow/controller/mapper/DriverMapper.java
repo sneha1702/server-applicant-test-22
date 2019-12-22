@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.freenow.controller.mapper.CarMapper.mapCar;
+
 public class DriverMapper
 {
     public static DriverDO makeDriverDO(DriverDTO driverDTO)
@@ -15,25 +17,37 @@ public class DriverMapper
         return DriverDO.builder()
             .username(driverDTO.getUsername())
             .password(driverDTO.getPassword())
+            .onlineStatus(driverDTO.getOnlineStatus())
+            .car(mapCar(driverDTO.getCar()))
             .build();
     }
 
 
     public static DriverDTO makeDriverDTO(DriverDO driverDO)
+
     {
-        DriverDTO.DriverDTOBuilder driverDTOBuilder =
-            DriverDTO.newBuilder()
-                .setId(driverDO.getId())
-                .setPassword(driverDO.getPassword())
-                .setUsername(driverDO.getUsername());
+        DriverDTO builder = DriverDTO.builder()
+            .id(driverDO.getId())
+            .username(driverDO.getUsername())
+            .password(driverDO.getPassword())
+            .onlineStatus(driverDO.getOnlineStatus())
+            .coordinate(driverDO.getCoordinate())
+            .build();
+
+        //        DriverDTO.DriverDTOBuilder driverDTOBuilder =
+        //            DriverDTO.newBuilder()
+        //                .setId(driverDO.getId())
+        //        .setPassword(driverDO.getPassword())
+        //        .setUsername(driverDO.getUsername());
 
         GeoCoordinate coordinate = driverDO.getCoordinate();
         if (coordinate != null)
         {
-            driverDTOBuilder.setCoordinate(coordinate);
+            builder.setCoordinate(coordinate);
         }
 
-        return driverDTOBuilder.createDriverDTO();
+        //        return driverDTOBuilder.createDriverDTO();
+        return builder;
     }
 
 
