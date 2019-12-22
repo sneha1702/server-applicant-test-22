@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.freenow.controller.mapper.CarMapper.mapCar;
+import static com.freenow.controller.mapper.CarMapper.mapCarDO;
 
 public class DriverMapper
 {
@@ -18,7 +18,7 @@ public class DriverMapper
             .username(driverDTO.getUsername())
             .password(driverDTO.getPassword())
             .onlineStatus(driverDTO.getOnlineStatus())
-            .car(mapCar(driverDTO.getCar()))
+            .car(mapCarDO(driverDTO.getCar()))
             .build();
     }
 

@@ -115,7 +115,10 @@ public class DriverController
         @RequestParam(required = false) Boolean selected)
     {
         Specification<DriverDO> and = DriverCriteriaSpecs.withUsername(username).
-            and(DriverCriteriaSpecs.withLicensePlate(licensePlate));
+            and(DriverCriteriaSpecs.withOnlineStatus(onlineStatus)).
+            and(DriverCriteriaSpecs.withLicensePlate(licensePlate))
+            .and(DriverCriteriaSpecs.withConvertible(convertible)
+                .and(DriverCriteriaSpecs.withEngineType(engineType)).and(DriverCriteriaSpecs.withRating(rating).and(DriverCriteriaSpecs.withSelected(selected))));
         return DriverMapper.makeDriverDTOList(driverService.find(and));
     }
 

@@ -3,9 +3,18 @@ package com.freenow.datatransferobject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.freenow.domainvalue.EngineType;
+import java.util.List;
 import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CarDTO
 {
     @JsonIgnore
@@ -25,6 +34,11 @@ public class CarDTO
 
     @NotNull(message = "engineType can not be null!")
     private EngineType engineType;
+
+    private Boolean selected;
+
+    private List<DriverDTO>
+        drivers;
 
     // license_plate, seat_count, convertible, rating, engine_type
 }

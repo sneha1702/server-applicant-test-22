@@ -15,14 +15,14 @@ public class CarCriteriaSpecs
     }
 
 
-    public static Specification<CarDO> withSeatCount(String seatCount)
+    public static Specification<CarDO> withRating(String rating)
     {
         return (root, query, cb) ->
-            seatCount == null ? null : cb.equal(root.get("seatCount"), seatCount);
+            rating == null ? null : cb.equal(root.get("rating"), rating);
     }
 
 
-    public static Specification<CarDO> withConvertible(String convertible)
+    public static Specification<CarDO> withConvertible(Boolean convertible)
     {
         return (root, query, cb) ->
             convertible == null ? null : cb.equal(root.get("convertible"), convertible);
