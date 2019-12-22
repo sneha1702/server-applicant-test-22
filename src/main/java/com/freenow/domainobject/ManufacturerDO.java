@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
     name = "manufacturer",
-    uniqueConstraints = @UniqueConstraint(name = "uc_manu_id", columnNames = "manu_id"))
+    uniqueConstraints = @UniqueConstraint(name = "uc_manu_id", columnNames = "id"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -30,4 +30,8 @@ public class ManufacturerDO
     @Id
     @GeneratedValue
     private Long id;
+
+    //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //    @JoinColumn(name = "car_id", nullable = false)
+    //    private List<CarDO> car;
 }

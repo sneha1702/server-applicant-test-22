@@ -1,6 +1,7 @@
 package com.freenow.domainobject;
 
 import com.freenow.domainvalue.EngineType;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -51,13 +51,14 @@ public class CarDO
     @Column(name = "engine_type", nullable = false)
     private EngineType engineType;
 
-    @OneToOne(mappedBy = "car", fetch = FetchType.EAGER)
-    private DriverDO driver;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "car_id", nullable = true)
+    private List<DriverDO> driver;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "manufacturer_id", nullable = false)
-    private ManufacturerDO manufacturer;
+    //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //    @JoinColumn(name = "car_id", nullable = false)
+    //    private ManufacturerDO manufacturer;
 
-    @Column(nullable = false)
+    @Column
     private Boolean selected;
 }
