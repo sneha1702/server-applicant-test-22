@@ -23,16 +23,16 @@ public class DefaultCarService implements CarService
     @Override
     public CarDO find(Long id) throws CarNotFoundException
     {
-        Optional<CarDO> carDO = carRepository.findById(id
-        );
+        Optional<CarDO> carDO = carRepository.findById(id);
         if (carDO.isPresent())
         {
-            return carDO.get();
+            CarDO val = carDO.get();
+            if (val.getDeleted() == null || !val.getDeleted())
+            {
+                return val;
+            }
         }
-        else
-        {
-            throw new CarNotFoundException("Car not found!");
-        }
+        throw new CarNotFoundException("Car not found!");
     }
 
 
@@ -40,7 +40,7 @@ public class DefaultCarService implements CarService
     public List<CarDO> findAll()
     {
         Iterable<CarDO> it = carRepository.findAll();
-        return StreamSupport.stream(it.spliterator(), false)
+        return StreamSupport.stream(it.spliterator(), false).filter(e -> e.getDeleted() == null || !e.getDeleted())
             .collect(Collectors.toList());
     }
 

@@ -1,7 +1,8 @@
 package com.freenow.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freenow.domainobject.CarDO;
+import com.freenow.datatransferobject.CarDTO;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class CarControllerTest
             .andExpect(status().isOk());
         MvcResult mvcResult = resultActions.andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        List<CarDO> carDOS = Arrays.asList(objectMapper.readValue(contentAsString, CarDO[].class));
+        List<CarDTO> carDOS = Arrays.asList(objectMapper.readValue(contentAsString, CarDTO[].class));
         assertThat(carDOS.size()).isEqualTo(3);
     }
 
@@ -53,7 +54,9 @@ public class CarControllerTest
             .andExpect(status().isOk());
         MvcResult mvcResult = resultActions.andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        List<CarDO> carDOS = Arrays.asList(objectMapper.readValue(contentAsString, CarDO[].class));
+
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        List<CarDTO> carDOS = Arrays.asList(objectMapper.readValue(contentAsString, CarDTO[].class));
         assertThat(carDOS.size()).isEqualTo(1);
         assertThat(carDOS.get(0).getLicensePlate()).containsIgnoringCase("XYZ456");
 

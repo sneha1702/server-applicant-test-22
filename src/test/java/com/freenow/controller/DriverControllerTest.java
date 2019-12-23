@@ -111,7 +111,7 @@ public class DriverControllerTest
     {
         this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
 
-        this.mockMvc.perform(put("/v1/drivers/selectCar/5?licensePlate=ABC123")).andDo(print()).andExpect(status().isNotFound());
+        this.mockMvc.perform(put("/v1/drivers/selectCar/5?licensePlate=ABC123")).andDo(print()).andExpect(status().is(417));
     }
 
 

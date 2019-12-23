@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
     name = "manufacturer",
-    uniqueConstraints = @UniqueConstraint(name = "uc_manu_id", columnNames = "licenceNum"))
+    uniqueConstraints = @UniqueConstraint(name = "uc_manu_id", columnNames = "serial_num"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -38,8 +39,9 @@ public class ManufacturerDO
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private String licenceNum;
+    @Column(name = "serial_num", nullable = false)
+    @NotNull(message = "Serial Num cannot be null")
+    private String serialNum;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer_id", nullable = true)

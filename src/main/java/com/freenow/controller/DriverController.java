@@ -7,6 +7,7 @@ import com.freenow.datatransferobject.DriverDTO;
 import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.EngineType;
 import com.freenow.domainvalue.OnlineStatus;
+import com.freenow.exception.CarAlreadyInUseException;
 import com.freenow.exception.CarNotFoundException;
 import com.freenow.exception.ConstraintsViolationException;
 import com.freenow.exception.DriverNotFoundException;
@@ -79,7 +80,7 @@ public class DriverController
     @PutMapping("/selectCar/{driverId}")
     public void selectCar(
         @PathVariable long driverId, @RequestParam(required = false) String licensePlate)
-        throws CarNotFoundException, DriverOfflineException, DriverNotFoundException
+        throws CarNotFoundException, DriverOfflineException, DriverNotFoundException, CarAlreadyInUseException
 
     {
         carSelectionService.selectCar(driverId, CarCriteriaSpecs.withLicensePlate(licensePlate));

@@ -5,10 +5,13 @@ import com.freenow.dataaccessobject.DriverRepository;
 import com.freenow.domainobject.CarDO;
 import com.freenow.domainobject.DriverDO;
 import com.freenow.domainvalue.OnlineStatus;
+import com.freenow.exception.CarAlreadyInUseException;
 import com.freenow.exception.CarNotFoundException;
 import com.freenow.exception.DriverNotFoundException;
 import com.freenow.exception.DriverOfflineException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -24,7 +27,7 @@ public class DefaultCarSelectionService implements CarSelectionService
 
     @Override
     public void selectCar(Long driverId, Specification<CarDO> carDO)
-        throws DriverOfflineException, CarNotFoundException, DriverNotFoundException
+        throws DriverOfflineException, CarNotFoundException, DriverNotFoundException, CarAlreadyInUseException
     {
         Optional<DriverDO> optionalDriverDO = driverRepository.findById(driverId);
         if (optionalDriverDO.isPresent())
@@ -41,6 +44,7 @@ public class DefaultCarSelectionService implements CarSelectionService
         }
         else
         {
+
             throw new DriverNotFoundException("Driver with Id " + driverId + " not found!");
         }
     }
@@ -68,17 +72,25 @@ public class DefaultCarSelectionService implements CarSelectionService
 
 
     private synchronized void driverGetToSelectACar(DriverDO driverDO, Specification<CarDO> carDO)
-        throws CarNotFoundException
+        throws CarNotFoundException, CarAlreadyInUseException
     {
-        Optional<CarDO> anyCar = carRepository.findAll(carDO).stream().filter(e -> e.getSelected() == null || e.getSelected().equals(false)).findAny();
-        if (anyCar.isPresent())
+        List<CarDO> all = carRepository.findAll(carDO).stream().filter(e -> e.getDeleted() == null || !e.getDeleted()).collect(Collectors.toList());
+        if (all.size() > 0)
         {
-            CarDO firstCar = anyCar.get();
-            firstCar.setSelected(true);
-            driverDO.setCar(firstCar);
+            Optional<CarDO> anyCar = all.stream().filter(e -> e.getSelected() == null || e.getSelected().equals(false)).findAny();
+            if (anyCar.isPresent())
+            {
+                CarDO firstCar = anyCar.get();
+                firstCar.setSelected(true);
+                driverDO.setCar(firstCar);
 
-            driverRepository.save(driverDO);
-            //        carRepository.save(firstCar);
+                driverRepository.save(driverDO);
+                //        carRepository.save(firstCar);
+            }
+            else
+            {
+                throw new CarAlreadyInUseException("Car already in use!");
+            }
         }
         else
         {

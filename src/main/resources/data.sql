@@ -48,6 +48,6 @@ insert into car(id,license_plate,convertible,rating,engine_type)values(2,'XYZ123
 
 insert into car(id,license_plate,convertible,rating,engine_type)values(3,'XYZ456',true,10,'ENGINE');
 
-insert into manufacturer(id,manufacturetype,licenceNum)values (1,'BMW','ABCD1233');
+insert into manufacturer(id,manufacture_type,serial_num)values (1,'BMW','ABCD1233');
 
-insert into manufacturer(id,manufacturetype,licenceNum)values (2,'MERC','XYZ1233');
+insert into manufacturer(id,manufacture_type,serial_num)values (2,'MERC','XYZ1233');

@@ -14,6 +14,7 @@ public class CarMapper
             .engineType(carDTO.getEngineType())
             .convertible(carDTO.getConvertible())
             .licensePlate(carDTO.getLicensePlate())
+            .selected(carDTO.getSelected())
             .build();
     }
 
@@ -27,6 +28,7 @@ public class CarMapper
             .engineType(carDO.getEngineType())
             .convertible(carDO.getConvertible())
             .licensePlate(carDO.getLicensePlate())
+            .selected(carDO.getSelected())
             .build();
     }
 }
