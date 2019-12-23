@@ -74,15 +74,15 @@ public class DefaultCarSelectionService implements CarSelectionService
         if (anyCar.isPresent())
         {
             CarDO firstCar = anyCar.get();
-            driverDO.setCar(firstCar);
             firstCar.setSelected(true);
+            driverDO.setCar(firstCar);
 
             driverRepository.save(driverDO);
             //        carRepository.save(firstCar);
         }
         else
         {
-            throw new CarNotFoundException();
+            throw new CarNotFoundException("Car is unavailable");
         }
     }
 }

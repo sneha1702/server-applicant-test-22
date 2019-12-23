@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,17 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DriverControllerTest
 {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    //    @MockBean
-    //    private DriverService driverService;
-    //
-    //    @MockBean
-    //    private CarSelectionService carSelectionService;
 
 
     @Test
@@ -46,7 +43,7 @@ public class DriverControllerTest
         MvcResult mvcResult = resultActions.andReturn();
         String contentAsString = mvcResult.getResponse().getContentAsString();
         List<DriverDO> driverDOS = Arrays.asList(objectMapper.readValue(contentAsString, DriverDO[].class));
-        assertThat(driverDOS.size()).isEqualTo(4);
+        assertThat(driverDOS.size()).isEqualTo(5);
     }
 
 
@@ -66,9 +63,9 @@ public class DriverControllerTest
     @Test
     public void filterDriversByCarAttributesTest() throws Exception
     {
-        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(put("/v1/drivers/selectCar/7?licensePlate=XYZ123")).andDo(print()).andExpect(status().isOk());
         ResultActions resultActions =
-            this.mockMvc.perform(get("/v1/drivers/filter?onlineStatus=ONLINE&licensePlate=ABC123&engineType=GAS&convertible=true&rating=10"))
+            this.mockMvc.perform(get("/v1/drivers/filter?onlineStatus=ONLINE&licensePlate=XYZ123&engineType=GAS&convertible=true&rating=10"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -102,16 +99,25 @@ public class DriverControllerTest
     @Test
     public void deselectCar() throws Exception
     {
-        ResultActions resultActions1 = this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
-
-        ResultActions resultActions = this.mockMvc.perform(put("/v1/drivers/deselectCar/8")).andDo(print()).andExpect(status().isOk());
-        
+        this.mockMvc.perform(put("/v1/drivers/selectCar/4?licensePlate=XYZ456")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(put("/v1/drivers/deselectCar/4")).andDo(print()).andExpect(status().isOk());
+        this.mockMvc.perform(put("/v1/drivers/selectCar/4?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
 
     }
 
 
     @Test
-    public void findDrivers()
+    public void selectAlreadySelectedCar() throws Exception
     {
+        this.mockMvc.perform(put("/v1/drivers/selectCar/8?licensePlate=ABC123")).andDo(print()).andExpect(status().isOk());
+
+        this.mockMvc.perform(put("/v1/drivers/selectCar/5?licensePlate=ABC123")).andDo(print()).andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    public void offlineDriverCannotSelectCar() throws Exception
+    {
+        this.mockMvc.perform(put("/v1/drivers/selectCar/3?licensePlate=XYZ123")).andDo(print()).andExpect(status().isBadRequest());
     }
 }

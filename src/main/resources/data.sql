@@ -30,7 +30,7 @@ insert into driver (id, date_created, deleted, online_status, password, username
 insert into driver (id, coordinate, date_coordinate_updated, date_created, deleted, online_status, password, username)
 values
  (7,
- 'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'OFFLINE',
+ 'aced0005737200226f72672e737072696e676672616d65776f726b2e646174612e67656f2e506f696e7431b9e90ef11a4006020002440001784400017978704023000000000000404bfa1cac083127', now(), now(), false, 'ONLINE',
 'driver07pw', 'driver07');
 
 -- Create 1 ONLINE driver with coordinate(longitude=9.5&latitude=55.954)
@@ -45,3 +45,5 @@ values
 insert into car(id,license_plate,convertible,rating,engine_type)values(1,'ABC123',true,10,'GAS');
 
 insert into car(id,license_plate,convertible,rating,engine_type)values(2,'XYZ123',true,10,'GAS');
+
+insert into car(id,license_plate,convertible,rating,engine_type)values(3,'XYZ456',true,10,'ENGINE');

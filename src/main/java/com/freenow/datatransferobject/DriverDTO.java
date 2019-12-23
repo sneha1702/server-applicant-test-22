@@ -29,7 +29,7 @@ public class DriverDTO
     private GeoCoordinate coordinate;
 
     private OnlineStatus onlineStatus;
-
+    @JsonIgnore
     private CarDTO car;
 
 

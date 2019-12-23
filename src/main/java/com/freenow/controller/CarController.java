@@ -10,7 +10,6 @@ import com.freenow.exception.CarNotFoundException;
 import com.freenow.exception.EntityNotFoundException;
 import com.freenow.service.car.CarService;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,15 +30,7 @@ public class CarController
     @GetMapping("/{carId}")
     public CarDTO getCar(@PathVariable long carId) throws EntityNotFoundException, CarNotFoundException
     {
-        Optional<CarDO> carDO = carService.find(carId);
-        if (carDO.isPresent())
-        {
-            return CarMapper.mapCarDTO(carDO.get());
-        }
-        else
-        {
-            throw new CarNotFoundException();
-        }
+        return carService.find(carId);
     }
 
 

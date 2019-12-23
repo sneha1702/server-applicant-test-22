@@ -1,6 +1,7 @@
 package com.freenow.domainobject;
 
 import com.freenow.domainvalue.EngineType;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,9 +52,9 @@ public class CarDO
     @Column(name = "engine_type", nullable = false)
     private EngineType engineType;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = true)
-    private List<DriverDO> driver;
+    private List<DriverDO> driver = new ArrayList<>();
 
     //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     //    @JoinColumn(name = "car_id", nullable = false)

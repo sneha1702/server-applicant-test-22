@@ -1,14 +1,15 @@
 package com.freenow.service.car;
 
+import com.freenow.datatransferobject.CarDTO;
 import com.freenow.domainobject.CarDO;
+import com.freenow.exception.CarNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.domain.Specification;
 
 public interface CarService
 {
 
-    Optional<CarDO> find(Long id);
+    CarDTO find(Long id) throws CarNotFoundException;
 
     List<CarDO> findAll();
 

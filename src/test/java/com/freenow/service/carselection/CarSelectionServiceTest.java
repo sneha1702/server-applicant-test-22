@@ -129,7 +129,7 @@ public class CarSelectionServiceTest
             .thenReturn(
                 Collections.singletonList(
                     CarDO.builder().id(123L).licensePlate("ABC123").selected(true).build()));
-        carSelectionService.selectCar(2L, Specification.where(withLicensePlate("ABC123")));
+        carSelectionService.selectCar(7L, Specification.where(withLicensePlate("ABC123")));
 
         // assert
         CarDO selCar = CarDO.builder().id(1L).licensePlate("ABC123").selected(true).build();
@@ -139,13 +139,4 @@ public class CarSelectionServiceTest
     }
 
 
-    @Test
-    public void testCarIsUnavailableForSelectionWhenItsSelected()
-    {
-        // arrange
-
-        // act
-
-        // assert
-    }
 }

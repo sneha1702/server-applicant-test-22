@@ -3,7 +3,6 @@ package com.freenow.datatransferobject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.freenow.domainvalue.EngineType;
-import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +35,6 @@ public class CarDTO
     private EngineType engineType;
 
     private Boolean selected;
-
-    private List<DriverDTO>
-        drivers;
 
     // license_plate, seat_count, convertible, rating, engine_type
 }
