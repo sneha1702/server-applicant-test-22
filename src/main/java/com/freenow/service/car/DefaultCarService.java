@@ -1,15 +1,15 @@
 package com.freenow.service.car;
 
-import com.freenow.controller.mapper.CarMapper;
 import com.freenow.dataaccessobject.CarRepository;
-import com.freenow.datatransferobject.CarDTO;
 import com.freenow.domainobject.CarDO;
 import com.freenow.exception.CarNotFoundException;
+import com.freenow.exception.ConstraintsViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +21,13 @@ public class DefaultCarService implements CarService
 
 
     @Override
-    public CarDTO find(Long id) throws CarNotFoundException
+    public CarDO find(Long id) throws CarNotFoundException
     {
         Optional<CarDO> carDO = carRepository.findById(id
         );
         if (carDO.isPresent())
         {
-            return CarMapper.mapCarDTO(carDO.get());
+            return carDO.get();
         }
         else
         {
@@ -49,5 +49,30 @@ public class DefaultCarService implements CarService
     public List<CarDO> findAll(Specification<CarDO> carDOSpecification)
     {
         return carRepository.findAll(carDOSpecification);
+    }
+
+
+    @Override
+    public CarDO create(CarDO carDO) throws ConstraintsViolationException
+    {
+        CarDO c;
+        try
+        {
+            c = carRepository.save(carDO);
+        }
+        catch (DataIntegrityViolationException e)
+        {
+            throw new ConstraintsViolationException(e.getMessage());
+        }
+        return c;
+    }
+
+
+    @Override
+    public synchronized void delete(long carId) throws CarNotFoundException
+    {
+        CarDO ca = find(carId);
+        ca.setDeleted(true);
+        carRepository.save(ca);
     }
 }

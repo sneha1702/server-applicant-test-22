@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -56,10 +57,13 @@ public class CarDO
     @JoinColumn(name = "car_id", nullable = true)
     private List<DriverDO> driver = new ArrayList<>();
 
-    //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //    @JoinColumn(name = "car_id", nullable = false)
-    //    private ManufacturerDO manufacturer;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "manufacturer_id", nullable = true)
+    private ManufacturerDO manufacturer;
 
     @Column
     private Boolean selected;
+
+    @Column
+    private Boolean deleted;
 }

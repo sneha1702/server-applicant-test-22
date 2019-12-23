@@ -47,3 +47,7 @@ insert into car(id,license_plate,convertible,rating,engine_type)values(1,'ABC123
 insert into car(id,license_plate,convertible,rating,engine_type)values(2,'XYZ123',true,10,'GAS');
 
 insert into car(id,license_plate,convertible,rating,engine_type)values(3,'XYZ456',true,10,'ENGINE');
+
+insert into manufacturer(id,manufacturetype,licenceNum)values (1,'BMW','ABCD1233');
+
+insert into manufacturer(id,manufacturetype,licenceNum)values (2,'MERC','XYZ1233');

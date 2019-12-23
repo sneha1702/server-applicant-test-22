@@ -48,6 +48,6 @@ public class CarCriteriaSpecs
             manufactureType == null
                 ? null
                 : cb.equal(
-                root.join("manufacture", JoinType.LEFT).get("manufactureType"), manufactureType);
+                root.join("manufacturer", JoinType.LEFT).get("manufactureType"), manufactureType);
     }
 }

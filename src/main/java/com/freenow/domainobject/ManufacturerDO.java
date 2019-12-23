@@ -1,12 +1,19 @@
 package com.freenow.domainobject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freenow.domainvalue.ManufactureType;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -17,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
     name = "manufacturer",
-    uniqueConstraints = @UniqueConstraint(name = "uc_manu_id", columnNames = "id"))
+    uniqueConstraints = @UniqueConstraint(name = "uc_manu_id", columnNames = "licenceNum"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -31,7 +38,11 @@ public class ManufacturerDO
     @GeneratedValue
     private Long id;
 
-    //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //    @JoinColumn(name = "car_id", nullable = false)
-    //    private List<CarDO> car;
+    @Column(nullable = false)
+    private String licenceNum;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "manufacturer_id", nullable = true)
+    @JsonIgnore
+    private List<CarDO> car = new ArrayList<>();
 }

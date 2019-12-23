@@ -7,16 +7,22 @@ import com.freenow.domainobject.CarDO;
 import com.freenow.domainvalue.EngineType;
 import com.freenow.domainvalue.ManufactureType;
 import com.freenow.exception.CarNotFoundException;
-import com.freenow.exception.EntityNotFoundException;
+import com.freenow.exception.ConstraintsViolationException;
 import com.freenow.service.car.CarService;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,15 +33,31 @@ public class CarController
     private final CarService carService;
 
 
-    @GetMapping("/{carId}")
-    public CarDTO getCar(@PathVariable long carId) throws EntityNotFoundException, CarNotFoundException
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CarDTO createCar(@Valid @RequestBody CarDTO ca) throws ConstraintsViolationException
     {
-        return carService.find(carId);
+        CarDO carDO = CarMapper.mapCarDO(ca);
+        return CarMapper.mapCarDTO(carService.create(carDO));
+    }
+
+
+    @DeleteMapping("/{carId}")
+    public void deleteCar(@PathVariable long carId) throws CarNotFoundException
+    {
+        carService.delete(carId);
+    }
+
+
+    @GetMapping("/{carId}")
+    public CarDTO getCar(@PathVariable long carId) throws CarNotFoundException
+    {
+        return CarMapper.mapCarDTO(carService.find(carId));
     }
 
 
     @GetMapping
-    public List<CarDTO> getCars() throws EntityNotFoundException, CarNotFoundException
+    public List<CarDTO> getCars()
     {
         return carService.findAll().stream().map(CarMapper::mapCarDTO).collect(Collectors.toList());
     }
